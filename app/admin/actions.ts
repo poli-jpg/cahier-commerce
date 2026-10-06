@@ -35,3 +35,7 @@ export async function prolongerBoutique(id: string, mois: number) {
 export async function suspendreBoutique(id: string) {
   return appeler("admin_suspendre", { p_boutique: id });
 }
+
+export async function traiterDemande(id: string, traitee: boolean) {
+  return appeler("admin_traiter_demande", { p_demande: id, p_traitee: traitee });
+}

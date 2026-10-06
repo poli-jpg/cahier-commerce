@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { envoyerDemandeAide } from "@/app/aide-actions";
 import { SUJETS, type Sujet } from "@/lib/aide";
 import { lienContact } from "@/lib/contact";
 
@@ -18,6 +19,11 @@ export function AideChat() {
   const [ecrit, setEcrit] = useState(false);
   const fil = useRef<HTMLDivElement>(null);
   const fermer = useRef<HTMLButtonElement>(null);
+  // « Signaler un problème » : message enregistré, visible dans l'Espace admin
+  const [signaler, setSignaler] = useState(false);
+  const [probleme, setProbleme] = useState("");
+  const [retour, setRetour] = useState<{ texte: string; erreur: boolean } | null>(null);
+  const [envoiEnCours, startEnvoi] = useTransition();
 
   useEffect(() => {
     fil.current?.scrollTo({ top: fil.current.scrollHeight, behavior: "smooth" });
@@ -33,6 +39,20 @@ export function AideChat() {
 
   // Dans la caisse, la barre « Continuer / Valider » occupe déjà le bas de l'écran.
   if (chemin.startsWith("/vendre")) return null;
+
+  function envoyerProbleme() {
+    setRetour(null);
+    startEnvoi(async () => {
+      const r = await envoyerDemandeAide(probleme);
+      if (r.erreur) {
+        setRetour({ texte: r.erreur, erreur: true });
+        return;
+      }
+      setProbleme("");
+      setSignaler(false);
+      setRetour({ texte: "Message envoyé. Nous vous répondons sur WhatsApp, en général dans la journée.", erreur: false });
+    });
+  }
 
   function demander(s: Sujet) {
     if (ecrit) return;
@@ -154,6 +174,56 @@ export function AideChat() {
                   </button>
                 ))}
               </div>
+              {signaler ? (
+                <div className="mt-3 flex flex-col gap-2">
+                  <label htmlFor="probleme" className="text-sm font-semibold">
+                    Décrivez votre problème
+                  </label>
+                  <textarea
+                    id="probleme"
+                    value={probleme}
+                    onChange={(e) => setProbleme(e.target.value)}
+                    rows={3}
+                    maxLength={1000}
+                    placeholder="Ex. : je n'arrive pas à enregistrer une vente à crédit"
+                    className="rounded-xl border border-bord bg-carte px-3 py-2 text-base"
+                  />
+                  {retour?.erreur && (
+                    <p role="alert" className="text-sm font-medium text-erreur">
+                      {retour.texte}
+                    </p>
+                  )}
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setSignaler(false)} className="h-11 flex-1 rounded-xl border border-bord bg-carte text-sm font-semibold">
+                      Annuler
+                    </button>
+                    <button
+                      type="button"
+                      onClick={envoyerProbleme}
+                      disabled={envoiEnCours || probleme.trim().length < 3}
+                      className="h-11 flex-1 rounded-xl bg-vert text-sm font-bold text-white disabled:opacity-50"
+                    >
+                      {envoiEnCours ? "Envoi…" : "Envoyer"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRetour(null);
+                    setSignaler(true);
+                  }}
+                  className="mt-3 flex h-12 w-full items-center justify-center rounded-xl border-2 border-vert bg-carte text-sm font-bold text-vert"
+                >
+                  Signaler un problème
+                </button>
+              )}
+              {retour && !retour.erreur && (
+                <p role="status" className="mt-2 rounded-xl bg-vert-pale px-3 py-2 text-sm font-medium text-vert-fonce">
+                  {retour.texte}
+                </p>
+              )}
               <a
                 href={lienContact("Bonjour, j'ai une question sur l'appli Cahier Commerce : ")}
                 target="_blank"
