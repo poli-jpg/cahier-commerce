@@ -6,9 +6,12 @@ import { lireLimite } from "@/lib/constantes";
 import { BoutonRetour } from "@/components/bouton-retour";
 import { createClient } from "@/lib/supabase/server";
 import type { Client } from "@/lib/clients";
-import { dateCourte, fcfa } from "@/lib/format";
+import { dateCourte, dateJour, fcfa } from "@/lib/format";
 import { libelleMoyen, type StatutVente } from "@/lib/ventes";
 import { formaterTelephone } from "@/lib/telephone";
+import { IconeWhatsApp } from "@/components/bouton-whatsapp";
+import { getBoutique } from "@/lib/boutique";
+import { lienWhatsApp } from "@/lib/contact";
 import { archiverClient, modifierClient } from "../actions";
 import { FormulaireClient } from "../formulaire-client";
 import { AnnulerVersement } from "./annuler-versement";
@@ -72,6 +75,15 @@ export default async function PageClient({ params, searchParams }: Props) {
 
   const ventes = achats ?? [];
   const dette = ventes.reduce((s, v) => s + v.remaining_amount, 0);
+
+  // Rappel WhatsApp : message poli, prêt à envoyer (la commerçante peut le modifier avant).
+  const boutique = await getBoutique();
+  const plusAncienne = ventes.filter((v) => v.remaining_amount > 0).at(-1)?.created_at;
+  const messageRappel =
+    `Bonjour ${client.name}, c'est ${boutique?.name ?? "la boutique"}. ` +
+    `Petit rappel amical : il vous reste ${fcfa(dette)} à régler sur vos achats` +
+    (plusAncienne ? ` (depuis le ${dateJour(plusAncienne)})` : "") +
+    `. Merci et bonne journée !`;
   const totalAchete = ventes.reduce((s, v) => s + v.total_amount, 0);
 
   // Un versement peut couvrir plusieurs achats : on additionne ses parts.
@@ -132,6 +144,22 @@ export default async function PageClient({ params, searchParams }: Props) {
             Enregistrer un paiement
           </Link>
         )}
+        {dette > 0 &&
+          (client.phone ? (
+            <a
+              href={lienWhatsApp(client.phone, messageRappel)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex h-14 items-center justify-center gap-2.5 rounded-2xl border-2 border-vert bg-carte text-lg font-bold text-vert"
+            >
+              <IconeWhatsApp />
+              Rappeler sur WhatsApp
+            </a>
+          ) : (
+            <a href="#titre-infos" className="mt-2 text-sm font-semibold underline underline-offset-4">
+              Ajoutez son numéro pour pouvoir lui envoyer un rappel WhatsApp
+            </a>
+          ))}
       </section>
 
       <section aria-labelledby="titre-achats" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">

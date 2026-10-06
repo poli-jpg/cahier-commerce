@@ -50,6 +50,18 @@ export const SUJETS: Sujet[] = [
     action: { label: "Voir le Lebalma", href: "/lebalma" },
   },
   {
+    id: "rappel",
+    question: "Rappeler à un client qu'il doit de l'argent",
+    intro: "Depuis sa fiche, en un appui :",
+    etapes: [
+      "Touchez « Lebalma » en bas, puis le nom du client.",
+      "Touchez « Rappeler sur WhatsApp ».",
+      "WhatsApp s'ouvre avec un message poli déjà écrit, avec le montant : touchez Envoyer.",
+    ],
+    astuce: "Vous pouvez modifier le message dans WhatsApp avant de l'envoyer. Le numéro du client doit être enregistré sur sa fiche.",
+    action: { label: "Voir le Lebalma", href: "/lebalma" },
+  },
+  {
     id: "erreur-paiement",
     question: "J'ai tapé un mauvais montant",
     intro: "Un paiement ne s'efface jamais, mais on peut l'annuler :",
