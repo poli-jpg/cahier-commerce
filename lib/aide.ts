@@ -108,6 +108,12 @@ export const SUJETS: Sujet[] = [
     action: { label: "Ajouter un client", href: "/clients/nouveau" },
   },
   {
+    id: "compte",
+    question: "Changer le nom, le téléphone ou le mot de passe",
+    intro: "Touchez le rond en haut à droite de l'accueil pour ouvrir « Mon compte ». Vous pouvez y changer le nom de la boutique, le téléphone et le mot de passe, et voir la fin de votre abonnement.",
+    action: { label: "Ouvrir Mon compte", href: "/compte" },
+  },
+  {
     id: "installer",
     question: "Mettre l'appli sur mon écran d'accueil",
     intro: "Pour l'ouvrir comme une vraie application :",

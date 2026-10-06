@@ -3,9 +3,8 @@ import { BandeauAbonnement } from "@/components/bandeau-abonnement";
 import { BanniereInstallation } from "@/components/banniere-installation";
 import { getBoutique } from "@/lib/boutique";
 import { createClient } from "@/lib/supabase/server";
-import { dateCourte, entier, fcfa, ilYa } from "@/lib/format";
+import { dateCourte, entier, fcfa, ilYa, joursDepuis } from "@/lib/format";
 import { MOYENS_PAIEMENT, libelleMoyen } from "@/lib/ventes";
-import { seDeconnecter } from "../(auth)/actions";
 
 export const metadata = { title: "Accueil — Cahier Commerce" };
 
@@ -31,6 +30,9 @@ export default async function Accueil() {
   if (error || !data) throw new Error("Chargement du tableau de bord impossible.");
   const tdb = data as TableauDeBord;
 
+  // Jour 1 = jour de création de la boutique, Jour 2 = le lendemain…
+  const numeroJour = joursDepuis(boutique!.created_at) + 1;
+
   const encaisse = Object.values(tdb.encaisse_jour).reduce((s, m) => s + m, 0);
   const detailEncaisse = MOYENS_PAIEMENT.filter((m) => tdb.encaisse_jour[m.valeur]).map(
     (m) => `${m.libelle} ${entier(tdb.encaisse_jour[m.valeur])}`,
@@ -45,23 +47,27 @@ export default async function Accueil() {
             <p className="text-sm text-white/80 first-letter:uppercase">{formatDate.format(new Date())}</p>
             <h1 className="truncate text-2xl font-extrabold">{boutique!.name}</h1>
           </div>
-          <form action={seDeconnecter}>
-            <button
-              type="submit"
-              aria-label="Se déconnecter"
-              className="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/30 focus-visible:outline-white"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H4" />
-              </svg>
-            </button>
-          </form>
+          <Link
+            href="/compte"
+            aria-label="Mon compte"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/30 focus-visible:outline-white"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+          </Link>
         </header>
 
         <h2 id="titre-jour" className="sr-only">Aujourd&apos;hui</h2>
         <Link href="/ventes" className="flex flex-col rounded-xl focus-visible:outline-white">
-          <span className="text-sm">Ventes du jour ({tdb.ventes_jour.nombre})</span>
+          <span className="text-sm">Ventes du jour {numeroJour}</span>
           <span className="montant text-4xl font-extrabold">{fcfa(tdb.ventes_jour.total)}</span>
+          <span className="text-sm text-white/80">
+            {tdb.ventes_jour.nombre === 0
+              ? "Aucune vente pour l'instant"
+              : `${tdb.ventes_jour.nombre} vente${tdb.ventes_jour.nombre > 1 ? "s" : ""}`}
+          </span>
         </Link>
         <div className="grid grid-cols-2 gap-2.5">
           <div className="flex flex-col gap-0.5 rounded-2xl bg-white/12 p-3">

@@ -11,6 +11,7 @@ export type Boutique = {
   phone: string | null;
   statut_compte: StatutCompte;
   abonnement_jusqu_au: string | null; // "AAAA-MM-JJ"
+  created_at: string;
 };
 
 // La boutique du compte connecté, QUEL QUE SOIT son statut (règle RLS sur owner_id).
@@ -19,7 +20,7 @@ export const getBoutique = cache(async (): Promise<Boutique | null> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("businesses")
-    .select("id, name, type, phone, statut_compte, abonnement_jusqu_au")
+    .select("id, name, type, phone, statut_compte, abonnement_jusqu_au, created_at")
     .maybeSingle();
 
   if (error) throw new Error("Lecture de la boutique impossible : " + error.message);
