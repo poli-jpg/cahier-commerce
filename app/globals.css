@@ -35,6 +35,12 @@ body {
 }
 
 /* ---- Application installée (PWA) et confort tactile ---- */
+
+/* Marge sous la barre du bas sur iPhone : juste la place du trait d'accueil,
+   pas les 34 px complets qui laissaient un grand vide blanc. */
+:root {
+  --bas-securise: calc(env(safe-area-inset-bottom, 0px) * 0.4);
+}
 html {
   -webkit-text-size-adjust: 100%;
 }

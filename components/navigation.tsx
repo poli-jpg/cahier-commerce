@@ -53,7 +53,7 @@ export function Navigation() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 border-t border-trait bg-carte pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 border-t border-trait bg-carte pb-[var(--bas-securise)]"
     >
       <ul className="mx-auto flex max-w-md">
         {ONGLETS.map((o) => {
