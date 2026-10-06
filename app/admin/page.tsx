@@ -27,6 +27,7 @@ type BoutiqueAdmin = {
   derniere_vente: string | null;
   nb_produits: number;
   nb_clients: number;
+  par_jour: { jour: number; date: string; ventes: number; montant: number }[]; // le plus récent d'abord
 };
 
 type Etat = "a_valider" | "active" | "bientot" | "expiree" | "refusee";
@@ -47,6 +48,8 @@ const ETATS: { valeur: Etat; libelle: string; badge: string }[] = [
   { valeur: "active", libelle: "Actives", badge: "bg-vert-pale text-vert-fonce" },
   { valeur: "refusee", libelle: "Refusées", badge: "bg-trait text-encre" },
 ];
+
+const jourSemaine = new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 
 const dateCourte = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 const libelleType = (t: string) => TYPES_BOUTIQUE.find((x) => x.valeur === t)?.libelle ?? t;
@@ -73,7 +76,8 @@ export default async function PageAdmin({ searchParams }: { searchParams: Promis
 
   const { data, error } = await supabase.rpc("admin_boutiques").returns<BoutiqueAdmin[]>();
   if (error) throw new Error("Lecture des boutiques impossible.");
-  const boutiques = (data as BoutiqueAdmin[]).map((b) => ({ ...b, etat: etatDe(b) }));
+  // par_jour ?? [] : la page fonctionne même si la migration 0008 n'est pas encore passée.
+  const boutiques = (data as BoutiqueAdmin[]).map((b) => ({ ...b, par_jour: b.par_jour ?? [], etat: etatDe(b) }));
 
   const compte = (e: Etat) => boutiques.filter((b) => b.etat === e).length;
   const affichees = filtre ? boutiques.filter((b) => b.etat === filtre) : boutiques;
@@ -138,6 +142,31 @@ export default async function PageAdmin({ searchParams }: { searchParams: Promis
                     {periode(b.cree_le)} : {b.ventes_7j} vente{b.ventes_7j > 1 ? "s" : ""}, {fcfa(b.montant_7j)}. {b.nb_produits} produits,{" "}
                     {b.nb_clients} clients.{b.derniere_vente ? ` Dernière vente ${ilYa(b.derniere_vente)}.` : " Aucune vente."}
                   </p>
+                )}
+
+                {b.statut_compte === "valide" && b.par_jour.length > 0 && (
+                  <details className="rounded-xl bg-fond px-3 py-2" open={b.par_jour.length <= 7}>
+                    <summary className="cursor-pointer py-1 text-sm font-semibold">
+                      Jour par jour ({b.par_jour.length} jour{b.par_jour.length > 1 ? "s" : ""})
+                    </summary>
+                    <ul className="flex flex-col pt-1">
+                      {b.par_jour.map((j, i) => (
+                        <li key={j.date} className="flex items-baseline justify-between gap-3 border-t border-trait py-1.5 text-sm first:border-t-0">
+                          <span>
+                            <span className="font-bold">Jour {j.jour}</span>{" "}
+                            <span className="text-sourdine">({i === 0 ? "aujourd'hui" : jourSemaine.format(new Date(j.date))})</span>
+                          </span>
+                          {j.ventes > 0 ? (
+                            <span className="montant shrink-0 font-semibold">
+                              {j.ventes} vente{j.ventes > 1 ? "s" : ""}, {fcfa(j.montant)}
+                            </span>
+                          ) : (
+                            <span className="shrink-0 text-sourdine">aucune vente</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
                 )}
 
                 <div className="flex flex-wrap items-start gap-2">
