@@ -172,7 +172,7 @@ export default async function PageAdmin({ searchParams }: { searchParams: Promis
                 <div className="flex flex-wrap items-start gap-2">
                   {b.etat === "a_valider" && (
                     <>
-                      <BoutonAction libelle="Valider (30 j d'essai)" style="principal" action={validerBoutique.bind(null, b.id)} />
+                      <BoutonAction libelle="Valider (14 j d'essai)" style="principal" action={validerBoutique.bind(null, b.id)} />
                       <BoutonAction libelle="Refuser" style="danger" confirmation="Confirmer le refus" action={refuserBoutique.bind(null, b.id)} />
                     </>
                   )}

@@ -24,7 +24,7 @@ export default async function PageEnAttente() {
         <p className="text-sourdine">
           {refuse
             ? "Votre compte n'a pas été activé. Écrivez-nous sur WhatsApp si vous pensez que c'est une erreur."
-            : "Nous vérifions votre boutique et l'activons rapidement, en général dans la journée. Vous aurez ensuite 30 jours d'essai gratuit."}
+            : "Nous vérifions votre boutique et l'activons rapidement, en général dans la journée. Vous aurez ensuite 14 jours d'essai gratuit."}
         </p>
       </div>
 
