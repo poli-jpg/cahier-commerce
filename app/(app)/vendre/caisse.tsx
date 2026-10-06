@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
+import { PAR_PAGE } from "@/lib/constantes";
 import { fcfa, entier } from "@/lib/format";
 import type { Categorie } from "@/lib/produits";
 import { MOYENS_PAIEMENT, type ClientCaisse, type LigneVente, type MoyenPaiement } from "@/lib/ventes";
@@ -48,6 +49,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
 
   const [recherche, setRecherche] = useState("");
   const [categorie, setCategorie] = useState("");
+  const [nombreAffiche, setNombreAffiche] = useState(PAR_PAGE);
   const [libre, setLibre] = useState({ ouvert: false, description: "", prix: "" });
 
   const [mode, setMode] = useState<ModePaiement>("tout");
@@ -169,7 +171,10 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
             id="recherche-produit"
             type="search"
             value={recherche}
-            onChange={(e) => setRecherche(e.target.value)}
+            onChange={(e) => {
+              setRecherche(e.target.value);
+              setNombreAffiche(PAR_PAGE);
+            }}
             placeholder="Karité, parfum, gel…"
             className="h-12 rounded-2xl border border-bord bg-carte px-4 text-base"
           />
@@ -181,7 +186,10 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
               <button
                 key={c.id || "tout"}
                 type="button"
-                onClick={() => setCategorie(c.id)}
+                onClick={() => {
+                  setCategorie(c.id);
+                  setNombreAffiche(PAR_PAGE);
+                }}
                 aria-pressed={categorie === c.id}
                 className={`h-10 rounded-full px-4 text-sm font-semibold ${
                   categorie === c.id ? "bg-encre text-white" : "border border-bord bg-carte text-encre"
@@ -204,7 +212,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
           <p className="bord-a-bord border-y border-trait bg-carte p-5 text-[15px] text-sourdine">Aucun produit ne correspond.</p>
         ) : (
           <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
-            {produitsAffiches.map((p) => {
+            {produitsAffiches.slice(0, nombreAffiche).map((p) => {
               const ligne = lignes.find((l) => l.produitId === p.id);
               const epuise = p.stock_quantity === 0;
               return (
@@ -250,6 +258,16 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
               );
             })}
           </ul>
+        )}
+
+        {produitsAffiches.length > nombreAffiche && (
+          <button
+            type="button"
+            onClick={() => setNombreAffiche((n) => n + PAR_PAGE)}
+            className="h-12 rounded-2xl border border-bord bg-carte text-[15px] font-semibold text-vert"
+          >
+            Voir plus
+          </button>
         )}
 
         <section aria-label="Montant libre" className="flex flex-col gap-3">

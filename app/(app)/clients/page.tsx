@@ -1,15 +1,18 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Client } from "@/lib/clients";
+import { VoirPlus } from "@/components/voir-plus";
+import { lireLimite } from "@/lib/constantes";
 import { echapperLike } from "@/lib/format";
 import { formaterTelephone } from "@/lib/telephone";
 
 export const metadata = { title: "Clients — Cahier Commerce" };
 
-type Props = { searchParams: Promise<{ q?: string }> };
+type Props = { searchParams: Promise<{ q?: string; n?: string }> };
 
 export default async function PageClients({ searchParams }: Props) {
-  const { q = "" } = await searchParams;
+  const { q = "", n } = await searchParams;
+  const limite = lireLimite(n);
   const recherche = q.trim();
   const chiffres = recherche.replace(/\D/g, "");
   // Que des chiffres (et espaces) : on cherche dans les numéros, sinon dans les noms.
@@ -24,9 +27,10 @@ export default async function PageClients({ searchParams }: Props) {
   if (parTelephone) requete = requete.like("phone", `%${chiffres}%`);
   else if (recherche) requete = requete.ilike("name", `%${echapperLike(recherche)}%`);
 
-  const { data, error } = await requete.returns<Client[]>();
+  const { data, error } = await requete.range(0, limite).returns<Client[]>();
   if (error) throw new Error("Lecture des clients impossible : " + error.message);
-  const clients = data;
+  const plus = data.length > limite;
+  const clients = data.slice(0, limite);
 
   return (
     <main className="flex flex-col gap-5 px-5 py-6">
@@ -87,6 +91,8 @@ export default async function PageClients({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      {plus && <VoirPlus chemin="/clients" params={{ q: recherche }} limite={limite} />}
     </main>
   );
 }

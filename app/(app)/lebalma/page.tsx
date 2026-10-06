@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { VoirPlus } from "@/components/voir-plus";
+import { lireLimite } from "@/lib/constantes";
 import { BadgeStatut } from "@/components/badge-statut";
 import { createClient } from "@/lib/supabase/server";
 import { dateJour, echapperLike, fcfa, ilYa } from "@/lib/format";
@@ -23,7 +25,7 @@ type Dette = {
   statut: StatutVente;
 };
 
-type Props = { searchParams: Promise<{ q?: string; statut?: string }> };
+type Props = { searchParams: Promise<{ q?: string; statut?: string; n?: string }> };
 
 const FILTRES = [
   { valeur: "", libelle: "Tous" },
@@ -32,7 +34,8 @@ const FILTRES = [
 ];
 
 export default async function PageLebalma({ searchParams }: Props) {
-  const { q = "", statut = "" } = await searchParams;
+  const { q = "", statut = "", n } = await searchParams;
+  const limite = lireLimite(n);
   const recherche = q.trim();
 
   const supabase = await createClient();
@@ -70,7 +73,9 @@ export default async function PageLebalma({ searchParams }: Props) {
     .map((d) => ({ ...d, statut: (d.paye > 0 ? "partiel" : "en_dette") as StatutVente }))
     .sort((a, b) => a.depuis.localeCompare(b.depuis)); // les plus anciennes d'abord
 
-  const dettes = statut ? toutes.filter((d) => d.statut === statut) : toutes;
+  const filtrees = statut ? toutes.filter((d) => d.statut === statut) : toutes;
+  const plus = filtrees.length > limite;
+  const dettes = filtrees.slice(0, limite);
   const totalDu = toutes.reduce((s, d) => s + d.reste, 0);
 
   const lien = (valeur: string) => {
@@ -145,6 +150,8 @@ export default async function PageLebalma({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      {plus && <VoirPlus chemin="/lebalma" params={{ q: recherche, statut }} limite={limite} />}
       {dettes.length > 1 && <p className="text-center text-sm text-sourdine">Les plus anciennes d&apos;abord</p>}
     </main>
   );

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeStatut } from "@/components/badge-statut";
+import { VoirPlus } from "@/components/voir-plus";
+import { lireLimite } from "@/lib/constantes";
 import { BoutonRetour } from "@/components/bouton-retour";
 import { createClient } from "@/lib/supabase/server";
 import type { Client } from "@/lib/clients";
@@ -37,11 +39,13 @@ type Versement = Omit<Paiement, "amount"> & { montant: number };
 
 const moisAnnee = new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric", timeZone: "Africa/Dakar" });
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ paye?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ paye?: string; achats?: string; paiements?: string }> };
 
 export default async function PageClient({ params, searchParams }: Props) {
   const { id } = await params;
-  const { paye } = await searchParams;
+  const { paye, achats: nAchats, paiements: nPaiements } = await searchParams;
+  const limiteAchats = lireLimite(nAchats);
+  const limitePaiements = lireLimite(nPaiements);
   const supabase = await createClient();
   const [{ data: client }, { data: achats }, { data: paiements }] = await Promise.all([
     supabase
@@ -61,7 +65,6 @@ export default async function PageClient({ params, searchParams }: Props) {
       .select("versement_id, amount, payment_method, note, created_at, cancelled_at, cancel_reason")
       .eq("customer_id", id)
       .order("created_at", { ascending: false })
-      .limit(200)
       .returns<Paiement[]>(),
   ]);
 
@@ -134,8 +137,9 @@ export default async function PageClient({ params, searchParams }: Props) {
       <section aria-labelledby="titre-achats" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-achats" className="text-lg font-bold">Achats</h2>
         {ventes.length ? (
+          <>
           <ul className="flex flex-col">
-            {ventes.map((v) => (
+            {ventes.slice(0, limiteAchats).map((v) => (
               <li key={v.id} className="border-b border-trait last:border-b-0">
                 <Link href={`/ventes/${v.id}`} className="flex items-center justify-between gap-3 py-3">
                   <span className="flex flex-col gap-1">
@@ -150,6 +154,10 @@ export default async function PageClient({ params, searchParams }: Props) {
               </li>
             ))}
           </ul>
+          {ventes.length > limiteAchats && (
+            <VoirPlus chemin={`/clients/${client.id}`} params={{ paiements: nPaiements }} cle="achats" limite={limiteAchats} />
+          )}
+          </>
         ) : (
           <p className="text-[15px] text-sourdine">Aucun achat enregistré.</p>
         )}
@@ -158,8 +166,9 @@ export default async function PageClient({ params, searchParams }: Props) {
       <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-paiements" className="text-lg font-bold">Paiements reçus</h2>
         {versements.size ? (
+          <>
           <ul className="flex flex-col">
-            {[...versements.entries()].map(([vid, v]) => (
+            {[...versements.entries()].slice(0, limitePaiements).map(([vid, v]) => (
               <li key={vid} className="flex flex-col gap-2 border-b border-trait py-3 last:border-b-0">
                 <div className="flex items-center justify-between gap-3">
                   <span className="flex min-w-0 flex-col">
@@ -181,6 +190,10 @@ export default async function PageClient({ params, searchParams }: Props) {
               </li>
             ))}
           </ul>
+          {versements.size > limitePaiements && (
+            <VoirPlus chemin={`/clients/${client.id}`} params={{ achats: nAchats }} cle="paiements" limite={limitePaiements} />
+          )}
+          </>
         ) : (
           <p className="text-[15px] text-sourdine">Aucun paiement reçu.</p>
         )}

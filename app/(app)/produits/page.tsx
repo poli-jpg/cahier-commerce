@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { VoirPlus } from "@/components/voir-plus";
+import { lireLimite } from "@/lib/constantes";
 import { etatStock, getCategories, type Produit } from "@/lib/produits";
 import { echapperLike, entier, fcfa } from "@/lib/format";
 
@@ -7,10 +9,11 @@ export const metadata = { title: "Produits — Cahier Commerce" };
 
 const FILTRE_STOCK_FAIBLE = "faible";
 
-type Props = { searchParams: Promise<{ q?: string; cat?: string; ajoute?: string }> };
+type Props = { searchParams: Promise<{ q?: string; cat?: string; ajoute?: string; n?: string }> };
 
 export default async function PageProduits({ searchParams }: Props) {
-  const { q = "", cat = "", ajoute } = await searchParams;
+  const { q = "", cat = "", ajoute, n } = await searchParams;
+  const limite = lireLimite(n);
   const recherche = q.trim();
 
   const supabase = await createClient();
@@ -22,11 +25,16 @@ export default async function PageProduits({ searchParams }: Props) {
   if (recherche) requete = requete.ilike("name", `%${echapperLike(recherche)}%`);
   if (cat && cat !== FILTRE_STOCK_FAIBLE) requete = requete.eq("category_id", cat);
 
+  // Une ligne de plus que la limite : on sait ainsi s'il reste des produits à montrer.
+  if (cat !== FILTRE_STOCK_FAIBLE) requete = requete.range(0, limite);
+
   const [{ data, error }, categories] = await Promise.all([requete, getCategories()]);
   if (error) throw new Error("Lecture des produits impossible : " + error.message);
 
   let produits: Produit[] = data;
   if (cat === FILTRE_STOCK_FAIBLE) produits = produits.filter((p) => etatStock(p) !== "ok");
+  const plus = produits.length > limite;
+  produits = produits.slice(0, limite);
 
   const lienFiltre = (valeur: string) => {
     const params = new URLSearchParams();
@@ -138,6 +146,8 @@ export default async function PageProduits({ searchParams }: Props) {
           })}
         </ul>
       )}
+
+      {plus && <VoirPlus chemin="/produits" params={{ q: recherche, cat }} limite={limite} />}
     </main>
   );
 }
