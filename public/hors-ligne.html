@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e5a47">
+<title>Pas de connexion — Cahier Commerce</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+         background: #f3f4f1; color: #17201c; font-family: system-ui, -apple-system, sans-serif;
+         padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom); box-sizing: border-box; }
+  main { max-width: 360px; display: flex; flex-direction: column; gap: 16px; }
+  img { width: 72px; height: 72px; }
+  h1 { margin: 0; font-size: 26px; }
+  p { margin: 0; font-size: 17px; line-height: 1.5; color: #3e4a44; }
+  button { height: 56px; border: 0; border-radius: 16px; background: #0e5a47; color: #fff;
+           font: inherit; font-size: 18px; font-weight: 700; }
+  button:focus-visible { outline: 3px solid #17201c; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <img src="/icons/icon-192.png" alt="">
+  <h1>Pas de connexion internet</h1>
+  <p>Vos ventes et votre Lebalma sont en sécurité. Notez la vente sur un papier si c'est urgent, puis réessayez dès que le réseau revient.</p>
+  <button type="button" onclick="location.reload()">Réessayer</button>
+</main>
+</body>
+</html>

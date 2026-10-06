@@ -442,7 +442,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
                 type="button"
                 onClick={() => setMoyen(m.valeur)}
                 aria-pressed={moyen === m.valeur}
-                className={`h-12 rounded-xl text-[15px] font-semibold ${
+                className={`h-12 rounded-xl px-1 text-sm leading-tight font-semibold min-[360px]:text-[15px] ${
                   moyen === m.valeur ? "border-2 border-encre bg-carte font-bold" : "border border-bord bg-carte"
                 }`}
               >

@@ -75,7 +75,7 @@ export function FormulairePaiement({ action, dette, nom, versementId }: Props) {
           {MOYENS_PAIEMENT.map((m, i) => (
             <label
               key={m.valeur}
-              className="flex h-12 cursor-pointer items-center justify-center rounded-xl border border-bord bg-carte text-[15px] font-semibold has-[:checked]:border-2 has-[:checked]:border-encre has-[:checked]:font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-vert"
+              className="flex h-12 cursor-pointer items-center justify-center rounded-xl border border-bord bg-carte px-1 text-center text-sm leading-tight font-semibold min-[360px]:text-[15px] has-[:checked]:border-2 has-[:checked]:border-encre has-[:checked]:font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-vert"
             >
               <input type="radio" name="moyen" value={m.valeur} defaultChecked={i === 0} className="sr-only" />
               {m.libelle}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BanniereInstallation } from "@/components/banniere-installation";
 import { getBoutique } from "@/lib/boutique";
 import { createClient } from "@/lib/supabase/server";
 import { dateCourte, entier, fcfa, ilYa } from "@/lib/format";
@@ -46,6 +47,8 @@ export default async function Accueil() {
           </button>
         </form>
       </header>
+
+      <BanniereInstallation />
 
       {/* Aujourd'hui */}
       <section aria-labelledby="titre-jour" className="flex flex-col gap-4 rounded-3xl bg-vert p-5 text-white">

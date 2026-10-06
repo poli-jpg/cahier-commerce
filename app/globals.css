@@ -33,3 +33,39 @@ body {
 .montant {
   font-variant-numeric: tabular-nums;
 }
+
+/* ---- Application installée (PWA) et confort tactile ---- */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Encoche / barre d'état quand l'appli est ouverte en plein écran */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pas de double-tap-zoom ni de délai sur les boutons */
+a,
+button,
+input,
+select,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+/* Les boutons et la barre du bas ne se sélectionnent pas comme du texte */
+button,
+nav {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
+  }
+}
