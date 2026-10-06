@@ -72,7 +72,7 @@ export function ChoixClient({ clients, clientId, obligatoire, onChoisir, onCree 
       <h2 className="text-[15px] font-semibold">{titre}</h2>
 
       {nouveau ? (
-        <div className="flex flex-col gap-3 rounded-3xl bg-carte p-4">
+        <div className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte px-5 py-4">
           <label htmlFor="nouveau-nom" className="text-[15px] font-semibold">
             Nom
           </label>

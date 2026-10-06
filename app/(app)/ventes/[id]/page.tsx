@@ -46,7 +46,7 @@ export default async function PageVente({ params }: { params: Promise<{ id: stri
         </div>
       </header>
 
-      <section className={`flex flex-col gap-2 rounded-3xl p-5 ${vente.remaining_amount > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
+      <section className={`flex flex-col gap-2 bord-a-bord p-5 ${vente.remaining_amount > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
         <div className="flex items-center justify-between gap-3">
           <span className="text-[15px] font-semibold">{vente.remaining_amount > 0 ? "Reste à payer" : "Payée entièrement"}</span>
           <BadgeStatut statut={vente.payment_status} />
@@ -59,7 +59,7 @@ export default async function PageVente({ params }: { params: Promise<{ id: stri
         )}
       </section>
 
-      <section aria-labelledby="titre-articles" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-articles" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-articles" className="text-lg font-bold">Articles</h2>
         {vente.sale_items.map((l) => (
           <div key={l.id} className="flex items-start justify-between gap-3 text-[15px]">
@@ -77,7 +77,7 @@ export default async function PageVente({ params }: { params: Promise<{ id: stri
         </dl>
       </section>
 
-      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-paiements" className="text-lg font-bold">Paiements</h2>
         {paiements.length ? (
           paiements.map((p) => (

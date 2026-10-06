@@ -60,7 +60,7 @@ export default async function PageClients({ searchParams }: Props) {
       </form>
 
       {clients.length === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-3xl bg-carte p-5">
+        <div className="flex flex-col items-start gap-3 bord-a-bord border-y border-trait bg-carte p-5">
           <p className="text-[15px] text-sourdine">
             {recherche ? "Aucun client ne correspond." : "Aucun client pour l'instant."}
           </p>
@@ -69,10 +69,10 @@ export default async function PageClients({ searchParams }: Props) {
           </Link>
         </div>
       ) : (
-        <ul className="flex flex-col overflow-hidden rounded-3xl bg-carte">
+        <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
           {clients.map((c) => (
             <li key={c.id} className="border-b border-trait last:border-b-0">
-              <Link href={`/clients/${c.id}`} className="flex items-center gap-3 px-4 py-3.5 hover:bg-fond">
+              <Link href={`/clients/${c.id}`} className="flex items-center gap-3 px-5 py-3.5 hover:bg-fond">
                 <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-encre font-bold text-white">
                   {c.name.charAt(0).toUpperCase()}
                 </span>

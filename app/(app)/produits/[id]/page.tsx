@@ -43,7 +43,7 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
         <h1 className="min-w-0 truncate text-2xl font-extrabold">{produit.name}</h1>
       </header>
 
-      <section aria-labelledby="titre-stock" className="flex flex-col gap-4 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-stock" className="flex flex-col gap-4 bord-a-bord border-y border-trait bg-carte p-5">
         <div className="flex items-baseline justify-between gap-3">
           <h2 id="titre-stock" className="text-lg font-bold">En stock</h2>
           <p
@@ -61,7 +61,7 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
         />
       </section>
 
-      <section aria-labelledby="titre-historique" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-historique" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-historique" className="text-lg font-bold">Historique du stock</h2>
         {mouvements?.length ? (
           <ul className="flex flex-col gap-3">

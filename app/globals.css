@@ -29,6 +29,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Bloc qui va d'un bord à l'autre de l'écran (comme l'appli Atelier) :
+   annule la marge latérale de la page et les coins arrondis. */
+@utility bord-a-bord {
+  margin-inline: -1.25rem;
+  border-radius: 0;
+}
+
 /* Chiffres alignés pour tous les montants */
 .montant {
   font-variant-numeric: tabular-nums;

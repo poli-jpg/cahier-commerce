@@ -92,7 +92,7 @@ export function FormulairePaiement({ action, dette, nom, versementId }: Props) {
       </div>
 
       {montant > 0 && !tropGrand && (
-        <div aria-live="polite" className={`flex flex-col gap-1 rounded-3xl p-4 ${resteApres > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
+        <div aria-live="polite" className={`flex flex-col gap-1 bord-a-bord px-5 py-4 ${resteApres > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
           <span className="text-[15px] font-semibold">Après ce paiement</span>
           <span className="montant text-2xl font-extrabold">{resteApres > 0 ? `Reste ${fcfa(resteApres)}` : "Dette soldée"}</span>
         </div>

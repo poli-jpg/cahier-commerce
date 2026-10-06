@@ -115,7 +115,7 @@ export default async function PageClient({ params, searchParams }: Props) {
         )}
       </section>
 
-      <section className={`flex flex-col gap-1 rounded-3xl p-5 ${dette > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
+      <section className={`flex flex-col gap-1 bord-a-bord p-5 ${dette > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`}>
         <h2 className="text-[15px] font-semibold">{dette > 0 ? `${client.name} vous doit` : "Ne doit rien"}</h2>
         <p className="montant text-4xl font-extrabold">{fcfa(dette)}</p>
         <p className="montant text-sm">
@@ -131,7 +131,7 @@ export default async function PageClient({ params, searchParams }: Props) {
         )}
       </section>
 
-      <section aria-labelledby="titre-achats" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-achats" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-achats" className="text-lg font-bold">Achats</h2>
         {ventes.length ? (
           <ul className="flex flex-col">
@@ -155,7 +155,7 @@ export default async function PageClient({ params, searchParams }: Props) {
         )}
       </section>
 
-      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-paiements" className="text-lg font-bold">Paiements reçus</h2>
         {versements.size ? (
           <ul className="flex flex-col">

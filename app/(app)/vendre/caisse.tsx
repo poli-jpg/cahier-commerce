@@ -194,23 +194,23 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
         )}
 
         {produits.length === 0 ? (
-          <div className="flex flex-col items-start gap-2 rounded-3xl bg-carte p-5">
+          <div className="flex flex-col items-start gap-2 bord-a-bord border-y border-trait bg-carte p-5">
             <p className="text-[15px] text-sourdine">Aucun produit enregistré. Ajoutez vos produits, ou vendez avec un montant libre.</p>
             <Link href="/produits/nouveau" className="font-bold text-vert underline underline-offset-4">
               Ajouter un produit
             </Link>
           </div>
         ) : produitsAffiches.length === 0 ? (
-          <p className="rounded-3xl bg-carte p-5 text-[15px] text-sourdine">Aucun produit ne correspond.</p>
+          <p className="bord-a-bord border-y border-trait bg-carte p-5 text-[15px] text-sourdine">Aucun produit ne correspond.</p>
         ) : (
-          <ul className="flex flex-col overflow-hidden rounded-3xl bg-carte">
+          <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
             {produitsAffiches.map((p) => {
               const ligne = lignes.find((l) => l.produitId === p.id);
               const epuise = p.stock_quantity === 0;
               return (
                 <li
                   key={p.id}
-                  className={`flex items-center justify-between gap-3 border-b border-trait px-4 py-3 last:border-b-0 ${ligne ? "bg-vert-pale" : ""}`}
+                  className={`flex items-center justify-between gap-3 border-b border-trait px-5 py-3 last:border-b-0 ${ligne ? "bg-vert-pale" : ""}`}
                 >
                   <span className="flex min-w-0 flex-col">
                     <span className={`truncate text-base font-bold ${epuise ? "text-sourdine" : ""}`}>{p.name}</span>
@@ -265,7 +265,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
           ))}
 
           {libre.ouvert ? (
-            <div className="flex flex-col gap-3 rounded-3xl bg-carte p-4">
+            <div className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte px-5 py-4">
               <label htmlFor="libre-description" className="text-[15px] font-semibold">
                 Ce que vous vendez
               </label>
@@ -367,7 +367,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
         </div>
       </header>
 
-      <section aria-label="Récapitulatif" className="flex flex-col gap-3 rounded-3xl bg-carte p-4">
+      <section aria-label="Récapitulatif" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte px-5 py-4">
         {lignes.map((l) => (
           <div key={l.cle} className="flex flex-col gap-2 border-b border-trait pb-3 last:border-b-0 last:pb-0">
             <div className="flex items-start justify-between gap-3">
@@ -453,7 +453,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
         </fieldset>
       )}
 
-      <div className={`flex flex-col gap-1 rounded-3xl p-4 ${reste > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`} aria-live="polite">
+      <div className={`flex flex-col gap-1 bord-a-bord px-5 py-4 ${reste > 0 ? "bg-dette-pale text-dette" : "bg-vert-pale text-vert-fonce"}`} aria-live="polite">
         <span className="text-[15px] font-semibold">Reste à payer</span>
         <span className="montant text-3xl font-extrabold">{fcfa(reste)}</span>
       </div>

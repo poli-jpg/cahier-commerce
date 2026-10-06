@@ -104,7 +104,7 @@ export default async function PageProduits({ searchParams }: Props) {
       </nav>
 
       {produits.length === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-3xl bg-carte p-5">
+        <div className="flex flex-col items-start gap-3 bord-a-bord border-y border-trait bg-carte p-5">
           <p className="text-[15px] text-sourdine">
             {aucunFiltre ? "Aucun produit pour l'instant. Ajoutez ce que vous vendez." : "Aucun produit ne correspond."}
           </p>
@@ -115,12 +115,12 @@ export default async function PageProduits({ searchParams }: Props) {
           )}
         </div>
       ) : (
-        <ul className="flex flex-col overflow-hidden rounded-3xl bg-carte">
+        <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
           {produits.map((p) => {
             const etat = etatStock(p);
             return (
               <li key={p.id} className="border-b border-trait last:border-b-0">
-                <Link href={`/produits/${p.id}`} className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-fond">
+                <Link href={`/produits/${p.id}`} className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-fond">
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-base font-bold">{p.name}</span>
                     <span className="montant text-sm text-sourdine">{fcfa(p.selling_price)}</span>

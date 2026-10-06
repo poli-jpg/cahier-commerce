@@ -4,10 +4,10 @@ export default function Chargement() {
   return (
     <div role="status" aria-label="Chargement" className="flex animate-pulse flex-col gap-5 px-5 py-6">
       <div className="h-8 w-1/2 rounded-xl bg-trait" />
-      <div className="h-40 rounded-3xl bg-trait" />
+      <div className="h-40 bord-a-bord bg-trait" />
       <div className="h-16 rounded-2xl bg-trait" />
-      <div className="h-24 rounded-3xl bg-trait" />
-      <div className="h-24 rounded-3xl bg-trait" />
+      <div className="h-24 bord-a-bord bg-trait" />
+      <div className="h-24 bord-a-bord bg-trait" />
     </div>
   );
 }

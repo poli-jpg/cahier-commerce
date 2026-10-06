@@ -84,7 +84,7 @@ export default async function PageLebalma({ searchParams }: Props) {
     <main className="flex flex-col gap-5 px-5 py-6">
       <h1 className="text-2xl font-extrabold">Lebalma</h1>
 
-      <section className="flex flex-col gap-0.5 rounded-3xl bg-dette-pale p-5 text-dette">
+      <section className="flex flex-col gap-0.5 bord-a-bord bg-dette-pale p-5 text-dette">
         <h2 className="text-[15px] font-semibold">{recherche ? "Total pour cette recherche" : "Total qu'on vous doit"}</h2>
         <p className="montant text-4xl font-extrabold">{fcfa(totalDu)}</p>
         <p className="text-sm">
@@ -121,14 +121,14 @@ export default async function PageLebalma({ searchParams }: Props) {
       </nav>
 
       {dettes.length === 0 ? (
-        <p className="rounded-3xl bg-carte p-5 text-[15px] text-sourdine">
+        <p className="bord-a-bord border-y border-trait bg-carte p-5 text-[15px] text-sourdine">
           {toutes.length === 0 && !recherche ? "Personne ne vous doit d'argent." : "Aucune dette ne correspond."}
         </p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="bord-a-bord flex flex-col border-y border-trait bg-carte">
           {dettes.map((d) => (
-            <li key={d.clientId}>
-              <Link href={`/clients/${d.clientId}`} className="flex items-center justify-between gap-3 rounded-3xl bg-carte px-4 py-4 hover:bg-trait/40">
+            <li key={d.clientId} className="border-b border-trait last:border-b-0">
+              <Link href={`/clients/${d.clientId}`} className="flex items-center justify-between gap-3 px-5 py-4 hover:bg-fond">
                 <span className="flex min-w-0 flex-col gap-1">
                   <span className="truncate text-lg font-bold">{d.nom}</span>
                   <span className="text-sm text-sourdine">

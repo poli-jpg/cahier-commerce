@@ -36,27 +36,29 @@ export default async function Accueil() {
 
   return (
     <main className="flex flex-col gap-5 px-5 py-6">
-      <header className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 flex-col gap-0.5">
-          <p className="text-sm text-sourdine first-letter:uppercase">{formatDate.format(new Date())}</p>
-          <h1 className="truncate text-2xl font-extrabold">{boutique!.name}</h1>
-        </div>
-        <form action={seDeconnecter}>
-          <button type="submit" className="h-11 shrink-0 rounded-full border border-trait bg-carte px-4 text-sm font-semibold">
-            Se déconnecter
-          </button>
-        </form>
-      </header>
+      {/* En-tête + chiffres du jour, d'un bord à l'autre */}
+      <section aria-labelledby="titre-jour" className="bord-a-bord -mt-6 flex flex-col gap-4 bg-vert px-5 pt-6 pb-6 text-white">
+        <header className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <p className="text-sm text-white/80 first-letter:uppercase">{formatDate.format(new Date())}</p>
+            <h1 className="truncate text-2xl font-extrabold">{boutique!.name}</h1>
+          </div>
+          <form action={seDeconnecter}>
+            <button
+              type="submit"
+              aria-label="Se déconnecter"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/30 focus-visible:outline-white"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H4" />
+              </svg>
+            </button>
+          </form>
+        </header>
 
-      <BanniereInstallation />
-
-      {/* Aujourd'hui */}
-      <section aria-labelledby="titre-jour" className="flex flex-col gap-4 rounded-3xl bg-vert p-5 text-white">
-        <h2 id="titre-jour" className="text-[15px] font-semibold">Aujourd&apos;hui</h2>
+        <h2 id="titre-jour" className="sr-only">Aujourd&apos;hui</h2>
         <Link href="/ventes" className="flex flex-col rounded-xl focus-visible:outline-white">
-          <span className="text-sm">
-            Ventes du jour ({tdb.ventes_jour.nombre})
-          </span>
+          <span className="text-sm">Ventes du jour ({tdb.ventes_jour.nombre})</span>
           <span className="montant text-4xl font-extrabold">{fcfa(tdb.ventes_jour.total)}</span>
         </Link>
         <div className="grid grid-cols-2 gap-2.5">
@@ -72,6 +74,8 @@ export default async function Accueil() {
         {detailEncaisse.length > 0 && <p className="montant text-sm">{detailEncaisse.join(", ")}</p>}
       </section>
 
+      <BanniereInstallation />
+
       {/* Actions rapides */}
       <div className="grid grid-cols-2 gap-2.5">
         <Link href="/vendre" className="col-span-2 flex h-16 items-center justify-center rounded-2xl bg-encre text-lg font-bold text-white">
@@ -86,7 +90,7 @@ export default async function Accueil() {
       </div>
 
       {/* Lebalma */}
-      <Link href="/lebalma" className="flex items-center justify-between gap-3 rounded-3xl bg-dette-pale p-5 text-dette">
+      <Link href="/lebalma" className="flex items-center justify-between gap-3 bord-a-bord bg-dette-pale p-5 text-dette">
         <span className="flex flex-col gap-0.5">
           <span className="text-[15px] font-semibold">Lebalma : on vous doit</span>
           <span className="montant text-3xl font-extrabold">{fcfa(tdb.dettes.total)}</span>
@@ -100,7 +104,7 @@ export default async function Accueil() {
       </Link>
 
       {/* Stock faible */}
-      <section aria-labelledby="titre-stock" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-stock" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <div className="flex items-center justify-between">
           <h2 id="titre-stock" className="text-lg font-bold">
             Stock faible{tdb.stock_faible_nb > 0 ? ` (${tdb.stock_faible_nb})` : ""}
@@ -128,7 +132,7 @@ export default async function Accueil() {
       </section>
 
       {/* Derniers paiements */}
-      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 rounded-3xl bg-carte p-5">
+      <section aria-labelledby="titre-paiements" className="flex flex-col gap-3 bord-a-bord border-y border-trait bg-carte p-5">
         <h2 id="titre-paiements" className="text-lg font-bold">Derniers paiements reçus</h2>
         {tdb.derniers_paiements.length === 0 ? (
           <p className="text-[15px] text-sourdine">Aucun paiement pour l&apos;instant. Ils apparaîtront ici après vos ventes.</p>

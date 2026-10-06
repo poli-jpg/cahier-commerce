@@ -50,19 +50,19 @@ export default async function PageVentesDuJour() {
       </header>
 
       {data.length === 0 ? (
-        <div className="flex flex-col items-start gap-2 rounded-3xl bg-carte p-5">
+        <div className="flex flex-col items-start gap-2 bord-a-bord border-y border-trait bg-carte p-5">
           <p className="text-[15px] text-sourdine">Aucune vente aujourd&apos;hui.</p>
           <Link href="/vendre" className="font-bold text-vert underline underline-offset-4">
             Faire une vente
           </Link>
         </div>
       ) : (
-        <ul className="flex flex-col overflow-hidden rounded-3xl bg-carte">
+        <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
           {data.map((v) => {
             const articles = v.sale_items.map((i) => (i.quantity > 1 ? `${i.quantity} × ${i.description}` : i.description)).join(", ");
             return (
               <li key={v.id} className="border-b border-trait last:border-b-0">
-                <Link href={`/ventes/${v.id}`} className="flex items-center justify-between gap-3 px-4 py-3.5 hover:bg-fond">
+                <Link href={`/ventes/${v.id}`} className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-fond">
                   <span className="flex min-w-0 flex-col gap-1">
                     <span className="truncate font-bold">
                       {heure.format(new Date(v.created_at))}, {v.customers?.name ?? "comptant"}
