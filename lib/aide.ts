@@ -106,10 +106,23 @@ export const SUJETS: Sujet[] = [
     action: { label: "Voir mes produits", href: "/produits" },
   },
   {
+    id: "depense",
+    question: "Noter une dépense (marchandise, transport…)",
+    intro: "Quand vous sortez de l'argent pour la boutique :",
+    etapes: [
+      "Sur l'accueil, touchez la case « Dépenses » dans le bloc vert.",
+      "Touchez « Ajouter une dépense ».",
+      "Tapez le montant, choisissez à quoi il a servi et comment vous avez payé.",
+      "Touchez « Enregistrer la dépense ».",
+    ],
+    astuce: "Une erreur ? Touchez « Annuler cette dépense » sous la ligne : elle reste visible, barrée.",
+    action: { label: "Ajouter une dépense", href: "/depenses/nouvelle" },
+  },
+  {
     id: "chiffres",
     question: "Que veulent dire les chiffres de l'accueil ?",
     intro:
-      "« Ventes du jour » : tout ce que vous avez vendu aujourd'hui. « Argent encaissé » : l'argent vraiment reçu aujourd'hui, y compris les dettes remboursées. « Vendu à crédit » : la part des ventes du jour qui n'a pas été payée. « Lebalma » : tout ce que vos clients vous doivent.",
+      "« Ventes du jour » : tout ce que vous avez vendu aujourd'hui. « Argent encaissé » : l'argent vraiment reçu aujourd'hui, y compris les dettes remboursées. « Vendu à crédit » : la part des ventes du jour qui n'a pas été payée. « Dépenses » : l'argent sorti aujourd'hui pour la boutique. « Lebalma » : tout ce que vos clients vous doivent.",
     action: { label: "Voir les ventes du jour", href: "/ventes" },
   },
   {

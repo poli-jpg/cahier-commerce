@@ -12,6 +12,7 @@ type TableauDeBord = {
   ventes_jour: { nombre: number; total: number };
   encaisse_jour: Record<string, number>;
   credit_jour: number;
+  depenses_jour?: { nombre: number; montant: number }; // absent tant que la migration 0011 n'est pas passée
   dettes: { total: number; clients: number; plus_ancienne: string | null };
   stock_faible_nb: number;
   stock_faible: { id: string; name: string; stock_quantity: number }[];
@@ -69,11 +70,15 @@ export default async function Accueil() {
               : `${tdb.ventes_jour.nombre} vente${tdb.ventes_jour.nombre > 1 ? "s" : ""}`}
           </span>
         </Link>
-        <div className="grid grid-cols-2 gap-2.5">
-          <div className="flex flex-col gap-0.5 rounded-2xl bg-white/12 p-3">
+        <div className="grid grid-cols-2 grid-rows-2 gap-2.5">
+          <div className="row-span-2 flex flex-col justify-center gap-0.5 rounded-2xl bg-white/12 p-3">
             <span className="text-sm">Argent encaissé</span>
             <span className="montant text-xl font-bold">{fcfa(encaisse)}</span>
           </div>
+          <Link href="/depenses" className="flex flex-col gap-0.5 rounded-2xl bg-white/12 p-3 focus-visible:outline-white">
+            <span className="text-sm">Dépenses</span>
+            <span className="montant text-xl font-bold">{fcfa(tdb.depenses_jour?.montant ?? 0)}</span>
+          </Link>
           <div className="flex flex-col gap-0.5 rounded-2xl bg-white/12 p-3">
             <span className="text-sm">Vendu à crédit</span>
             <span className="montant text-xl font-bold">{fcfa(tdb.credit_jour)}</span>
