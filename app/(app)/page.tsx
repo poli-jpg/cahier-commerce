@@ -76,11 +76,8 @@ export default async function Accueil() {
 
       <BanniereInstallation />
 
-      {/* Actions rapides */}
+      {/* Actions rapides (la vente se fait avec le « + » vert en bas) */}
       <div className="grid grid-cols-2 gap-2.5">
-        <Link href="/vendre" className="col-span-2 flex h-16 items-center justify-center rounded-2xl bg-encre text-lg font-bold text-white">
-          Nouvelle vente
-        </Link>
         <Link href="/lebalma" className="flex h-14 items-center justify-center rounded-2xl border border-trait bg-carte text-center text-[15px] font-semibold">
           Recevoir un paiement
         </Link>

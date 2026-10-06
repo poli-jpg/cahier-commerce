@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { AideChat } from "@/components/aide-chat";
 import { Navigation } from "@/components/navigation";
 import { getBoutique } from "@/lib/boutique";
 
@@ -9,6 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <>
       <div className="mx-auto min-h-screen w-full max-w-md pb-[calc(var(--hauteur-nav)+2rem)]">{children}</div>
       <Navigation />
+      <AideChat />
     </>
   );
 }
