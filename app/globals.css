@@ -36,9 +36,11 @@ body {
 
 /* ---- Application installée (PWA) : mêmes réglages que l'appli Atelier ---- */
 
-/* Hauteur de la barre d'onglets (8 px + 52 px + zone du trait d'accueil iPhone) */
+/* Marge sous les onglets : sur iPhone, juste au-dessus du trait d'accueil
+   (34 px − 20 px = 14 px) au lieu de laisser une grande bande blanche vide. */
 :root {
-  --hauteur-nav: calc(60px + max(env(safe-area-inset-bottom), 10px));
+  --bas-nav: max(calc(env(safe-area-inset-bottom) - 20px), 6px);
+  --hauteur-nav: calc(56px + var(--bas-nav));
 }
 
 html,
