@@ -1,7 +1,7 @@
 "use client";
 
+import { useFormulaire } from "@/lib/use-formulaire";
 import Link from "next/link";
-import { useActionState } from "react";
 import { Champ } from "@/components/champ";
 import { MessageFormulaire } from "@/components/message-formulaire";
 import type { EtatFormulaire } from "@/lib/constantes";
@@ -12,11 +12,11 @@ type Props = {
 };
 
 export function FormulaireAuth({ mode, action }: Props) {
-  const [etat, formAction, enCours] = useActionState(action, {});
+  const [etat, formAction, enCours] = useFormulaire(action, {});
   const inscription = mode === "inscription";
 
   return (
-    <form action={formAction} className="flex flex-col gap-5">
+    <form onSubmit={formAction} className="flex flex-col gap-5">
       <Champ label="E-mail" name="email" type="email" autoComplete="email" inputMode="email" required />
       <Champ
         label="Mot de passe"

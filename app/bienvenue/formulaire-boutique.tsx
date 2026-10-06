@@ -1,16 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useFormulaire } from "@/lib/use-formulaire";
 import { Champ } from "@/components/champ";
 import { MessageFormulaire } from "@/components/message-formulaire";
 import { TYPES_BOUTIQUE } from "@/lib/constantes";
 import { creerBoutique } from "./actions";
 
 export function FormulaireBoutique() {
-  const [etat, formAction, enCours] = useActionState(creerBoutique, {});
+  const [etat, formAction, enCours] = useFormulaire(creerBoutique, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form onSubmit={formAction} className="flex flex-col gap-6">
       <Champ label="Nom de la boutique" name="name" placeholder="Ex. : Awa Beauté" autoComplete="organization" maxLength={80} required />
 
       <fieldset className="flex flex-col gap-2">

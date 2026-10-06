@@ -12,3 +12,6 @@ export function estTypeBoutique(v: string): v is TypeBoutique {
 
 // État renvoyé par les Server Actions des formulaires.
 export type EtatFormulaire = { erreur?: string; message?: string };
+
+// Valeur spéciale du menu « Catégorie » pour en créer une nouvelle.
+export const NOUVELLE_CATEGORIE = "__nouvelle";
