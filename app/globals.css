@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Couleurs reprises des maquettes : vert = argent reçu / actions, orange = argent dû */
+@theme {
+  --color-fond: #f3f4f1;
+  --color-carte: #ffffff;
+  --color-encre: #17201c;
+  --color-sourdine: #55605a;
+  --color-trait: #e2e5e0;
+  --color-bord: #c9cec8;
+  --color-vert: #0e5a47;
+  --color-vert-fonce: #093d30;
+  --color-vert-pale: #e3efea;
+  --color-dette: #7a3a06;
+  --color-dette-pale: #fbebdd;
+  --color-erreur: #9f1d1d;
+  --color-erreur-pale: #f8e1e1;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-fond);
+  color: var(--color-encre);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-vert);
+  outline-offset: 2px;
+}
+
+/* Chiffres alignés pour tous les montants */
+.montant {
+  font-variant-numeric: tabular-nums;
 }
