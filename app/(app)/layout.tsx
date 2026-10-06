@@ -7,7 +7,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!(await getBoutique())) redirect("/bienvenue");
   return (
     <>
-      <div className="mx-auto w-full max-w-md pb-24">{children}</div>
+      <div className="mx-auto min-h-screen w-full max-w-md pb-[calc(var(--hauteur-nav)+2rem)]">{children}</div>
       <Navigation />
     </>
   );

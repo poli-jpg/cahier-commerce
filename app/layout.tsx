@@ -18,6 +18,8 @@ export const viewport: Viewport = {
   themeColor: "#0e5a47",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover", // utilise tout l'écran, les marges « encoche » sont gérées en CSS
 };
 

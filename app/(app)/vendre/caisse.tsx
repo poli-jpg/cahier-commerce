@@ -306,7 +306,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
 
         {messageErreur}
 
-        <div className="fixed inset-x-0 bottom-[calc(4rem+var(--bas-securise))] border-t border-trait bg-carte">
+        <div className="fixed inset-x-0 bottom-[var(--hauteur-nav)] z-10 border-t border-trait bg-carte">
           <div className="mx-auto flex max-w-md items-center justify-between gap-3 px-5 py-3">
             <span className="flex flex-col">
               <span className="text-sm text-sourdine">
@@ -474,7 +474,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
 
       {messageErreur}
 
-      <div className="fixed inset-x-0 bottom-[calc(4rem+var(--bas-securise))] border-t border-trait bg-carte">
+      <div className="fixed inset-x-0 bottom-[var(--hauteur-nav)] z-10 border-t border-trait bg-carte">
         <div className="mx-auto max-w-md px-5 py-3">
           <button
             type="button"

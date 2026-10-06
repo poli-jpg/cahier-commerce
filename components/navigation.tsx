@@ -53,7 +53,7 @@ export function Navigation() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 border-t border-trait bg-carte pb-[var(--bas-securise)]"
+      className="fixed inset-x-0 bottom-0 z-10 border-t border-trait bg-carte pt-2 pb-[max(env(safe-area-inset-bottom),10px)]"
     >
       <ul className="mx-auto flex max-w-md">
         {ONGLETS.map((o) => {
@@ -63,12 +63,12 @@ export function Navigation() {
               <Link
                 href={o.href}
                 aria-current={actif ? "page" : undefined}
-                className={`flex h-16 flex-col items-center justify-center gap-1 text-xs ${
+                className={`flex h-[52px] flex-col items-center justify-center gap-1 text-[11px] ${
                   actif ? "font-bold text-vert" : "font-medium text-sourdine"
                 } ${"principal" in o ? "font-bold text-encre" : ""}`}
               >
                 {"principal" in o ? (
-                  <span className="-mt-6 flex size-13 items-center justify-center rounded-full bg-vert text-white shadow-[0_0_0_4px_var(--color-carte)]">
+                  <span className="-mt-5 flex size-13 items-center justify-center rounded-full bg-vert text-white shadow-[0_0_0_4px_var(--color-carte)]">
                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
                       {o.icone}
                     </svg>
