@@ -5,7 +5,7 @@ import { joursRestants, type StatutCompte } from "@/lib/boutique";
 import { lienWhatsApp } from "@/lib/contact";
 import { TYPES_BOUTIQUE } from "@/lib/constantes";
 import { createClient } from "@/lib/supabase/server";
-import { fcfa, ilYa } from "@/lib/format";
+import { fcfa, ilYa, joursDepuis } from "@/lib/format";
 import { formaterTelephone } from "@/lib/telephone";
 import { prolongerBoutique, refuserBoutique, suspendreBoutique, validerBoutique } from "./actions";
 import { BoutonAction } from "./bouton-action";
@@ -50,6 +50,10 @@ const ETATS: { valeur: Etat; libelle: string; badge: string }[] = [
 
 const dateCourte = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 const libelleType = (t: string) => TYPES_BOUTIQUE.find((x) => x.valeur === t)?.libelle ?? t;
+
+// Boutique inscrite il y a moins de 7 jours : on compte depuis son inscription.
+const periode = (creeLe: string) =>
+  joursDepuis(creeLe) < 7 ? `Depuis l'inscription (${ilYa(creeLe)})` : "7 derniers jours";
 
 function ligneAbonnement(b: BoutiqueAdmin, etat: Etat) {
   if (etat === "a_valider") return `Inscrite ${ilYa(b.cree_le)}`;
@@ -131,7 +135,7 @@ export default async function PageAdmin({ searchParams }: { searchParams: Promis
 
                 {b.statut_compte === "valide" && (
                   <p className="montant text-sm text-sourdine">
-                    7 derniers jours : {b.ventes_7j} vente{b.ventes_7j > 1 ? "s" : ""}, {fcfa(b.montant_7j)}. {b.nb_produits} produits,{" "}
+                    {periode(b.cree_le)} : {b.ventes_7j} vente{b.ventes_7j > 1 ? "s" : ""}, {fcfa(b.montant_7j)}. {b.nb_produits} produits,{" "}
                     {b.nb_clients} clients.{b.derniere_vente ? ` Dernière vente ${ilYa(b.derniere_vente)}.` : " Aucune vente."}
                   </p>
                 )}
