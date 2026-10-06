@@ -13,6 +13,17 @@ export function FormulaireBoutique() {
     <form onSubmit={formAction} className="flex flex-col gap-6">
       <Champ label="Nom de la boutique" name="name" placeholder="Ex. : Awa Beauté" autoComplete="organization" maxLength={80} required />
 
+      <Champ
+        label="Votre téléphone"
+        name="phone"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="77 123 45 67"
+        aide="Pour vous contacter et activer votre compte."
+        required
+      />
+
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 text-[15px] font-semibold">Vous vendez surtout…</legend>
         {TYPES_BOUTIQUE.map((t, i) => (
@@ -33,7 +44,7 @@ export function FormulaireBoutique() {
         disabled={enCours}
         className="h-14 rounded-2xl bg-vert text-lg font-bold text-white hover:bg-vert-fonce disabled:opacity-60"
       >
-        {enCours ? "Un instant…" : "Ouvrir mon cahier"}
+        {enCours ? "Un instant…" : "Créer ma boutique"}
       </button>
     </form>
   );

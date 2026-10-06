@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BandeauAbonnement } from "@/components/bandeau-abonnement";
 import { BanniereInstallation } from "@/components/banniere-installation";
 import { getBoutique } from "@/lib/boutique";
 import { createClient } from "@/lib/supabase/server";
@@ -22,9 +23,10 @@ const formatDate = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "num
 
 export default async function Accueil() {
   const supabase = await createClient();
-  const [boutique, { data, error }] = await Promise.all([
+  const [boutique, { data, error }, { data: admin }] = await Promise.all([
     getBoutique(),
     supabase.rpc("tableau_de_bord").returns<TableauDeBord>(),
+    supabase.rpc("est_admin").returns<boolean>(),
   ]);
   if (error || !data) throw new Error("Chargement du tableau de bord impossible.");
   const tdb = data as TableauDeBord;
@@ -73,6 +75,14 @@ export default async function Accueil() {
         </div>
         {detailEncaisse.length > 0 && <p className="montant text-sm">{detailEncaisse.join(", ")}</p>}
       </section>
+
+      <BandeauAbonnement boutique={boutique!} />
+
+      {admin === true && (
+        <Link href="/admin" className="flex h-12 items-center justify-center rounded-2xl border-2 border-encre bg-carte text-[15px] font-bold">
+          Espace admin
+        </Link>
+      )}
 
       <BanniereInstallation />
 
