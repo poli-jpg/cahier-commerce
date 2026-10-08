@@ -3,6 +3,7 @@
 import { useFormulaire } from "@/lib/use-formulaire";
 import { useState } from "react";
 import { Champ } from "@/components/champ";
+import { ChampPhoto } from "@/components/champ-photo";
 import { MessageFormulaire } from "@/components/message-formulaire";
 import { NOUVELLE_CATEGORIE, type EtatFormulaire } from "@/lib/constantes";
 import type { Categorie, Produit } from "@/lib/produits";
@@ -11,15 +12,19 @@ type Props = {
   action: (etat: EtatFormulaire, formData: FormData) => Promise<EtatFormulaire>;
   categories: Categorie[];
   produit?: Produit; // absent = création
+  boutiqueId: string;
 };
 
-export function FormulaireProduit({ action, categories, produit }: Props) {
+export function FormulaireProduit({ action, categories, produit, boutiqueId }: Props) {
   const [etat, formAction, enCours] = useFormulaire(action, {});
   const [categorie, setCategorie] = useState(produit?.category_id ?? "");
   const creation = !produit;
+  const [envoiPhoto, setEnvoiPhoto] = useState(false);
 
   return (
     <form onSubmit={formAction} className="flex flex-col gap-5">
+      <ChampPhoto boutiqueId={boutiqueId} initial={produit?.image_path} onEnvoi={setEnvoiPhoto} />
+
       <Champ
         label="Nom du produit"
         name="name"
@@ -98,10 +103,10 @@ export function FormulaireProduit({ action, categories, produit }: Props) {
 
       <button
         type="submit"
-        disabled={enCours}
+        disabled={enCours || envoiPhoto}
         className="h-14 rounded-2xl bg-vert text-lg font-bold text-white hover:bg-vert-fonce disabled:opacity-60"
       >
-        {enCours ? "Un instant…" : creation ? "Ajouter le produit" : "Enregistrer les modifications"}
+        {envoiPhoto ? "Envoi de la photo…" : enCours ? "Un instant…" : creation ? "Ajouter le produit" : "Enregistrer les modifications"}
       </button>
     </form>
   );

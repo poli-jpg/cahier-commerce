@@ -10,6 +10,7 @@ export type Produit = {
   purchase_price: number | null;
   stock_quantity: number;
   low_stock_threshold: number;
+  image_path: string | null;
 };
 
 export type EtatStock = "epuise" | "faible" | "ok";

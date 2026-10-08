@@ -6,6 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { NOUVELLE_CATEGORIE, type EtatFormulaire } from "@/lib/constantes";
 import { echapperLike, entier, lireEntier, lireTexte } from "@/lib/format";
+import { BUCKET_PHOTOS, cheminPhotoValide } from "@/lib/photos";
 
 type ChampsProduit = {
   name: string;
@@ -66,6 +67,14 @@ async function resoudreCategorie(
   return { id: data.id };
 }
 
+/** Chemin de photo envoyé par le formulaire : "" = pas de photo. */
+function lirePhoto(formData: FormData): { chemin: string | null } | { erreur: string } {
+  const chemin = String(formData.get("image_path") ?? "").trim();
+  if (!chemin) return { chemin: null };
+  if (!cheminPhotoValide(chemin)) return { erreur: "La photo n'a pas pu être enregistrée. Choisissez-la à nouveau." };
+  return { chemin };
+}
+
 function messageErreurProduit(code: string | undefined) {
   if (code === "23505") return "Un produit porte déjà ce nom. Ajoutez la contenance ou la teinte pour les distinguer.";
   return "Le produit n'a pas pu être enregistré. Vérifiez votre connexion et réessayez.";
@@ -81,11 +90,14 @@ export async function creerProduit(
   const stockInitial = lireEntier(formData.get("stock_initial"));
   if (stockInitial === "invalide") return { erreur: "Le stock de départ doit être un nombre." };
 
+  const photo = lirePhoto(formData);
+  if ("erreur" in photo) return photo;
+
   const supabase = await createClient();
   const categorie = await resoudreCategorie(supabase, formData);
   if ("erreur" in categorie) return categorie;
 
-  const { error } = await supabase.rpc("creer_produit", {
+  const { data: idProduit, error } = await supabase.rpc("creer_produit", {
     p_nom: champs.name,
     p_prix_vente: champs.selling_price,
     p_categorie: categorie.id,
@@ -94,6 +106,9 @@ export async function creerProduit(
     p_stock_initial: stockInitial ?? 0,
   });
   if (error) return { erreur: messageErreurProduit(error.code) };
+
+  // La photo est déjà dans le stockage : on la relie au produit créé.
+  if (photo.chemin) await supabase.from("products").update({ image_path: photo.chemin }).eq("id", idProduit);
 
   revalidatePath("/produits");
   redirect(`/produits?ajoute=${encodeURIComponent(champs.name)}`);
@@ -107,21 +122,30 @@ export async function modifierProduit(
   const champs = lireChampsProduit(formData);
   if ("erreur" in champs) return champs;
 
+  const photo = lirePhoto(formData);
+  if ("erreur" in photo) return photo;
+
   const supabase = await createClient();
   const categorie = await resoudreCategorie(supabase, formData);
   if ("erreur" in categorie) return categorie;
 
+  const { data: avant } = await supabase.from("products").select("image_path").eq("id", id).maybeSingle();
+
   const { data, error } = await supabase
     .from("products")
-    .update({ ...champs, category_id: categorie.id })
+    .update({ ...champs, category_id: categorie.id, image_path: photo.chemin })
     .eq("id", id)
     .eq("archived", false)
     .select("id");
   if (error) return { erreur: messageErreurProduit(error.code) };
   if (!data.length) return { erreur: "Ce produit n'existe plus." };
 
-  revalidatePath("/produits");
-  revalidatePath(`/produits/${id}`);
+  // Ancienne photo remplacée ou retirée : on libère la place (sans bloquer si ça échoue).
+  if (avant?.image_path && avant.image_path !== photo.chemin) {
+    await supabase.storage.from(BUCKET_PHOTOS).remove([avant.image_path]);
+  }
+
+  revalidatePath("/", "layout");
   return { message: "Modifications enregistrées." };
 }
 

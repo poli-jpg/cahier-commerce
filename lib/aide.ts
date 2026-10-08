@@ -15,7 +15,7 @@ export const SUJETS: Sujet[] = [
     intro: "Quand un client achète :",
     etapes: [
       "Touchez le bouton vert « + » en bas de l'écran.",
-      "Touchez « Ajouter » sur chaque produit, puis + ou − pour la quantité.",
+      "Touchez la photo de chaque produit, puis + ou − pour la quantité.",
       "Touchez « Continuer ».",
       "Choisissez « Tout payé », puis Espèces, Wave ou Orange Money.",
       "Touchez « Valider la vente ».",
@@ -90,7 +90,7 @@ export const SUJETS: Sujet[] = [
       "Indiquez combien vous en avez maintenant.",
       "Touchez « Ajouter le produit ».",
     ],
-    astuce: "Après un ajout, touchez « Ajouter un autre » pour enchaîner.",
+    astuce: "Ajoutez une photo avec « Prendre une photo » : le produit sera plus facile à trouver dans la caisse. Après un ajout, touchez « Ajouter un autre » pour enchaîner.",
     action: { label: "Ajouter un produit", href: "/produits/nouveau" },
   },
   {

@@ -10,7 +10,7 @@ export default async function PageVendre() {
   const [{ data: produits, error: e1 }, { data: clients, error: e2 }, categories] = await Promise.all([
     supabase
       .from("products")
-      .select("id, name, category_id, selling_price, stock_quantity")
+      .select("id, name, category_id, selling_price, stock_quantity, image_path")
       .eq("archived", false)
       .order("name")
       .returns<ProduitCaisse[]>(),

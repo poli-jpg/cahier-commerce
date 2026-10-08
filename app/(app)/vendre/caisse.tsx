@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
-import { PAR_PAGE } from "@/lib/constantes";
+import { PhotoProduit } from "@/components/photo-produit";
 import { fcfa, entier } from "@/lib/format";
 import type { Categorie } from "@/lib/produits";
 import { MOYENS_PAIEMENT, type ClientCaisse, type LigneVente, type MoyenPaiement } from "@/lib/ventes";
@@ -15,7 +15,11 @@ export type ProduitCaisse = {
   category_id: string | null;
   selling_price: number;
   stock_quantity: number;
+  image_path: string | null;
 };
+
+// Grille de 2 colonnes : on montre 6 produits, puis 6 de plus avec « Voir plus ».
+const PAR_GRILLE = 6;
 
 type Ligne = {
   cle: string;
@@ -36,8 +40,6 @@ function lireMontant(texte: string) {
 
 const sansAccents = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
-const classeBoutonQuantite =
-  "flex size-11 items-center justify-center rounded-xl text-2xl font-bold disabled:opacity-40";
 
 type Props = { produits: ProduitCaisse[]; clients: ClientCaisse[]; categories: Categorie[] };
 
@@ -49,7 +51,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
 
   const [recherche, setRecherche] = useState("");
   const [categorie, setCategorie] = useState("");
-  const [nombreAffiche, setNombreAffiche] = useState(PAR_PAGE);
+  const [nombreAffiche, setNombreAffiche] = useState(PAR_GRILLE);
   const [libre, setLibre] = useState({ ouvert: false, description: "", prix: "" });
 
   const [mode, setMode] = useState<ModePaiement>("tout");
@@ -159,7 +161,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
           </Link>
           <div className="flex flex-col">
             <h1 className="text-xl font-extrabold">Nouvelle vente</h1>
-            <p className="text-sm text-sourdine">Étape 1 sur 2 : produits</p>
+            <p className="text-sm text-sourdine">Étape 1 sur 2 : touchez une photo pour ajouter</p>
           </div>
         </header>
 
@@ -173,7 +175,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
             value={recherche}
             onChange={(e) => {
               setRecherche(e.target.value);
-              setNombreAffiche(PAR_PAGE);
+              setNombreAffiche(PAR_GRILLE);
             }}
             placeholder="Karité, parfum, gel…"
             className="h-12 rounded-2xl border border-bord bg-carte px-4 text-base"
@@ -188,7 +190,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
                 type="button"
                 onClick={() => {
                   setCategorie(c.id);
-                  setNombreAffiche(PAR_PAGE);
+                  setNombreAffiche(PAR_GRILLE);
                 }}
                 aria-pressed={categorie === c.id}
                 className={`h-10 rounded-full px-4 text-sm font-semibold ${
@@ -211,49 +213,64 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
         ) : produitsAffiches.length === 0 ? (
           <p className="bord-a-bord border-y border-trait bg-carte p-5 text-[15px] text-sourdine">Aucun produit ne correspond.</p>
         ) : (
-          <ul className="flex flex-col overflow-hidden bord-a-bord border-y border-trait bg-carte">
+          <ul className="grid grid-cols-2 gap-2.5">
             {produitsAffiches.slice(0, nombreAffiche).map((p) => {
               const ligne = lignes.find((l) => l.produitId === p.id);
               const epuise = p.stock_quantity === 0;
+              const faible = !epuise && p.stock_quantity <= 3;
               return (
                 <li
                   key={p.id}
-                  className={`flex items-center justify-between gap-3 border-b border-trait px-5 py-3 last:border-b-0 ${ligne ? "bg-vert-pale" : ""}`}
+                  className={`flex flex-col overflow-hidden rounded-2xl border-2 bg-carte ${ligne ? "border-vert" : "border-trait"} ${epuise ? "opacity-55" : ""}`}
                 >
-                  <span className="flex min-w-0 flex-col">
-                    <span className={`truncate text-base font-bold ${epuise ? "text-sourdine" : ""}`}>{p.name}</span>
-                    <span className={`montant text-sm ${epuise ? "font-semibold text-erreur" : "text-sourdine"}`}>
-                      {fcfa(p.selling_price)}, {epuise ? "épuisé" : `${entier(p.stock_quantity)} en stock`}
-                    </span>
-                  </span>
-                  {ligne ? (
-                    <span className="flex shrink-0 items-center gap-2">
-                      <button type="button" onClick={() => changerQuantite(p.id, -1)} aria-label={`Retirer un ${p.name}`} className={`${classeBoutonQuantite} border border-bord bg-carte`}>
-                        −
-                      </button>
-                      <span className="montant min-w-6 text-center text-lg font-extrabold" aria-live="polite">
+                  <button
+                    type="button"
+                    onClick={() => (ligne ? changerQuantite(p.id, 1) : ajouterProduit(p))}
+                    disabled={epuise || (ligne ? ligne.quantite >= p.stock_quantity : false)}
+                    aria-label={`Ajouter un ${p.name}`}
+                    className="relative block aspect-square w-full disabled:cursor-not-allowed"
+                  >
+                    <PhotoProduit chemin={p.image_path} nom={p.name} className="size-full" grand />
+                    {epuise && (
+                      <span className="absolute top-2 left-2 rounded-md bg-carte px-2 py-0.5 text-xs font-extrabold text-erreur">Épuisé</span>
+                    )}
+                    {ligne && (
+                      <span className="montant absolute top-2 right-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-vert px-2 text-[15px] font-extrabold text-white">
                         {ligne.quantite}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => changerQuantite(p.id, 1)}
-                        disabled={ligne.quantite >= p.stock_quantity}
-                        aria-label={`Ajouter un ${p.name}`}
-                        className={`${classeBoutonQuantite} bg-vert text-white`}
-                      >
-                        +
-                      </button>
+                    )}
+                  </button>
+                  <div className="flex flex-1 flex-col gap-0.5 px-2.5 pt-2 pb-2.5">
+                    <span className="line-clamp-2 text-sm leading-snug font-bold">{p.name}</span>
+                    <span className="montant text-[15px] font-extrabold">{fcfa(p.selling_price)}</span>
+                    <span className={`montant text-xs font-semibold ${epuise ? "text-erreur" : faible ? "text-dette" : "text-sourdine"}`}>
+                      {epuise ? "Épuisé" : `${entier(p.stock_quantity)} en stock`}
                     </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => ajouterProduit(p)}
-                      disabled={epuise}
-                      className="h-11 shrink-0 rounded-xl border border-vert bg-carte px-4 font-bold text-vert disabled:border-trait disabled:text-sourdine"
-                    >
-                      {epuise ? "Épuisé" : "Ajouter"}
-                    </button>
-                  )}
+                    {ligne && (
+                      <span className="mt-1.5 flex items-center justify-between">
+                        <button
+                          type="button"
+                          onClick={() => changerQuantite(p.id, -1)}
+                          aria-label={`Retirer un ${p.name}`}
+                          className="flex h-10 w-11 items-center justify-center rounded-xl border border-bord bg-carte text-xl font-bold"
+                        >
+                          −
+                        </button>
+                        <span className="montant text-base font-extrabold" aria-live="polite">
+                          {ligne.quantite}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => changerQuantite(p.id, 1)}
+                          disabled={ligne.quantite >= p.stock_quantity}
+                          aria-label={`Ajouter un ${p.name}`}
+                          className="flex h-10 w-11 items-center justify-center rounded-xl bg-vert text-xl font-bold text-white disabled:opacity-40"
+                        >
+                          +
+                        </button>
+                      </span>
+                    )}
+                  </div>
                 </li>
               );
             })}
@@ -263,7 +280,7 @@ export function Caisse({ produits, clients: clientsInitiaux, categories }: Props
         {produitsAffiches.length > nombreAffiche && (
           <button
             type="button"
-            onClick={() => setNombreAffiche((n) => n + PAR_PAGE)}
+            onClick={() => setNombreAffiche((n) => n + PAR_GRILLE)}
             className="h-12 rounded-2xl border border-bord bg-carte text-[15px] font-semibold text-vert"
           >
             Voir plus

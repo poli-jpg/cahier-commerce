@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { BoutonRetour } from "@/components/bouton-retour";
+import { PhotoProduit } from "@/components/photo-produit";
+import { getBoutique } from "@/lib/boutique";
 import { createClient } from "@/lib/supabase/server";
 import { LIBELLES_MOUVEMENT, etatStock, getCategories, type Produit } from "@/lib/produits";
 import { dateCourte, entier } from "@/lib/format";
@@ -15,10 +17,10 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: produit }, { data: mouvements }, categories] = await Promise.all([
+  const [{ data: produit }, { data: mouvements }, categories, boutique] = await Promise.all([
     supabase
       .from("products")
-      .select("id, name, category_id, selling_price, purchase_price, stock_quantity, low_stock_threshold")
+      .select("id, name, category_id, selling_price, purchase_price, stock_quantity, low_stock_threshold, image_path")
       .eq("id", id)
       .eq("archived", false)
       .maybeSingle<Produit>(),
@@ -30,6 +32,7 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
       .limit(15)
       .returns<Mouvement[]>(),
     getCategories(),
+    getBoutique(),
   ]);
 
   if (!produit) notFound();
@@ -40,6 +43,7 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
     <main className="flex flex-col gap-6 px-5 py-6">
       <header className="flex items-center gap-3">
         <BoutonRetour href="/produits" libelle="Retour aux produits" />
+        <PhotoProduit chemin={produit.image_path} nom={produit.name} className="size-12 rounded-xl" />
         <h1 className="min-w-0 truncate text-2xl font-extrabold">{produit.name}</h1>
       </header>
 
@@ -87,7 +91,7 @@ export default async function PageProduit({ params }: { params: Promise<{ id: st
 
       <section aria-labelledby="titre-infos" className="flex flex-col gap-4">
         <h2 id="titre-infos" className="text-lg font-bold">Informations</h2>
-        <FormulaireProduit action={modifierProduit.bind(null, produit.id)} categories={categories} produit={produit} />
+        <FormulaireProduit action={modifierProduit.bind(null, produit.id)} categories={categories} produit={produit} boutiqueId={boutique!.id} />
       </section>
 
       <form action={archiverProduit.bind(null, produit.id)} className="flex flex-col gap-2 border-t border-trait pt-5">

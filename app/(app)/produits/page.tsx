@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { PhotoProduit } from "@/components/photo-produit";
 import { VoirPlus } from "@/components/voir-plus";
 import { lireLimite } from "@/lib/constantes";
 import { etatStock, getCategories, type Produit } from "@/lib/produits";
@@ -19,7 +20,7 @@ export default async function PageProduits({ searchParams }: Props) {
   const supabase = await createClient();
   let requete = supabase
     .from("products")
-    .select("id, name, category_id, selling_price, purchase_price, stock_quantity, low_stock_threshold")
+    .select("id, name, category_id, selling_price, purchase_price, stock_quantity, low_stock_threshold, image_path")
     .eq("archived", false)
     .order("name");
   if (recherche) requete = requete.ilike("name", `%${echapperLike(recherche)}%`);
@@ -128,8 +129,9 @@ export default async function PageProduits({ searchParams }: Props) {
             const etat = etatStock(p);
             return (
               <li key={p.id} className="border-b border-trait last:border-b-0">
-                <Link href={`/produits/${p.id}`} className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-fond">
-                  <span className="flex min-w-0 flex-col">
+                <Link href={`/produits/${p.id}`} className="flex items-center gap-3.5 px-5 py-3 hover:bg-fond">
+                  <PhotoProduit chemin={p.image_path} nom={p.name} />
+                  <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-base font-bold">{p.name}</span>
                     <span className="montant text-sm text-sourdine">{fcfa(p.selling_price)}</span>
                   </span>
