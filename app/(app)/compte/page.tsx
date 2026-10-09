@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BoutonRetour } from "@/components/bouton-retour";
 import { getBoutique, joursRestants } from "@/lib/boutique";
 import { createClient } from "@/lib/supabase/server";
@@ -34,6 +35,27 @@ export default async function PageCompte() {
           {jours === 0 ? "Dernier jour" : `${jours} j`}
         </span>
       </section>
+
+      <Link
+        href="/journees"
+        className="bord-a-bord flex items-center justify-between gap-3 border-y border-trait bg-carte p-5 hover:bg-fond"
+      >
+        <span className="flex items-center gap-3">
+          <span aria-hidden="true" className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-vert-pale text-vert">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M3 10h18M8 3v4M16 3v4M8 14h3M8 17h6" />
+            </svg>
+          </span>
+          <span className="flex flex-col">
+            <span className="text-lg font-bold">Mes journées</span>
+            <span className="text-sm text-sourdine">Le total vendu de chaque jour</span>
+          </span>
+        </span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0 text-sourdine">
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
 
       <FormulaireBoutiqueCompte nom={boutique.name} telephone={boutique.phone} />
 

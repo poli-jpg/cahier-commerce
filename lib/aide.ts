@@ -119,6 +119,12 @@ export const SUJETS: Sujet[] = [
     action: { label: "Ajouter une dépense", href: "/depenses/nouvelle" },
   },
   {
+    id: "journees",
+    question: "Voir le total vendu des jours passés",
+    intro: "Touchez le rond en haut à droite de l'accueil, puis « Mes journées ». Chaque jour affiche le total vendu, l'argent encaissé, le crédit, les dépenses et ce qui reste en caisse.",
+    action: { label: "Voir mes journées", href: "/journees" },
+  },
+  {
     id: "chiffres",
     question: "Que veulent dire les chiffres de l'accueil ?",
     intro:
