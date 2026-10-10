@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BoutonRetour } from "@/components/bouton-retour";
 import { VoirPlus } from "@/components/voir-plus";
 import { lireLimite } from "@/lib/constantes";
@@ -63,7 +64,7 @@ export default async function PageJournees({ searchParams }: { searchParams: Pro
           const reste = j.encaisse - j.depenses;
           return (
             <li key={j.date} className="flex flex-col gap-2 border-b border-trait px-5 py-4 last:border-b-0">
-              <div className="flex items-baseline justify-between gap-3">
+              <Link href={i === 0 ? "/ventes" : `/ventes?date=${j.date}`} className="flex items-baseline justify-between gap-3">
                 <span className="flex flex-col">
                   <span className="text-lg font-extrabold">Jour {j.jour}</span>
                   <span className="text-sm text-sourdine">{libelleDate(j.date, i)}</span>
@@ -71,10 +72,10 @@ export default async function PageJournees({ searchParams }: { searchParams: Pro
                 <span className="flex flex-col items-end">
                   <span className="montant text-2xl font-extrabold">{fcfa(j.montant)}</span>
                   <span className="text-sm text-sourdine">
-                    {j.ventes === 0 ? "aucune vente" : `${entier(j.ventes)} vente${j.ventes > 1 ? "s" : ""}`}
+                    {j.ventes === 0 ? "aucune vente" : `${entier(j.ventes)} vente${j.ventes > 1 ? "s" : ""} ›`}
                   </span>
                 </span>
-              </div>
+              </Link>
 
               {(j.montant > 0 || j.encaisse > 0 || j.depenses > 0) && (
                 <dl className="montant grid grid-cols-2 gap-x-3 gap-y-1 rounded-xl bg-fond px-3 py-2.5 text-sm">
@@ -97,7 +98,7 @@ export default async function PageJournees({ searchParams }: { searchParams: Pro
 
       {journees.length > limite && <VoirPlus chemin="/journees" params={{}} limite={limite} />}
 
-      <p className="text-center text-sm text-sourdine">Jour 1 = le jour où vous avez ouvert votre cahier.</p>
+      <p className="text-center text-sm text-sourdine">Touchez un jour pour voir le détail de ses ventes. Jour 1 = le jour où vous avez ouvert votre cahier.</p>
     </main>
   );
 }

@@ -121,7 +121,7 @@ export const SUJETS: Sujet[] = [
   {
     id: "journees",
     question: "Voir le total vendu des jours passés",
-    intro: "Touchez le rond en haut à droite de l'accueil, puis « Mes journées ». Chaque jour affiche le total vendu, l'argent encaissé, le crédit, les dépenses et ce qui reste en caisse.",
+    intro: "Touchez le rond en haut à droite de l'accueil, puis « Mes journées ». Chaque jour affiche le total vendu, l'argent encaissé, le crédit, les dépenses et ce qui reste en caisse. Touchez un jour pour voir toutes ses ventes, même celles des clients de passage.",
     action: { label: "Voir mes journées", href: "/journees" },
   },
   {

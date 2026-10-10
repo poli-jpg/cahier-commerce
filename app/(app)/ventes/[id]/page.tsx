@@ -39,7 +39,7 @@ export default async function PageVente({ params }: { params: Promise<{ id: stri
   return (
     <main className="flex flex-col gap-5 px-5 py-6">
       <header className="flex items-center gap-3">
-        <BoutonRetour href={client ? `/clients/${client.id}` : "/"} libelle="Retour" />
+        <BoutonRetour href={client ? `/clients/${client.id}` : "/ventes"} libelle="Retour" />
         <div className="flex flex-col">
           <h1 className="text-xl font-extrabold">Vente enregistrée</h1>
           <p className="text-sm text-sourdine">{dateCourte(vente.created_at)}</p>
@@ -52,10 +52,12 @@ export default async function PageVente({ params }: { params: Promise<{ id: stri
           <BadgeStatut statut={vente.payment_status} />
         </div>
         <p className="montant text-4xl font-extrabold">{fcfa(vente.remaining_amount > 0 ? vente.remaining_amount : vente.total_amount)}</p>
-        {client && (
+        {client ? (
           <Link href={`/clients/${client.id}`} className="font-bold underline underline-offset-4">
             {client.name}
           </Link>
+        ) : (
+          <span className="font-semibold">Client de passage</span>
         )}
       </section>
 
